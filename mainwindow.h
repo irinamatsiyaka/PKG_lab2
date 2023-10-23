@@ -16,6 +16,7 @@ public:
 
 private slots:
     void chooseDirectory();
+    void chooseImages();
     void fillInfo(QStringList fileNames);
 
 private:
