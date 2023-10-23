@@ -18,7 +18,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
 {
-    setMinimumSize(900, 300);
+    setMinimumSize(900, 600);
 
     QAction *exitAct = new QAction("Exit");
     QAction *loadAct = new QAction("Load directory");
@@ -37,14 +37,17 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
     m_pTableWidget->setHorizontalHeaderLabels(m_TableHeader);
 
     QPushButton *m_pBtn = new QPushButton("Load Directory", this);
+    QPushButton *m_pBtntwo = new QPushButton("Load Images", this);
     QVBoxLayout *l = new QVBoxLayout(this);
     l->addWidget(m_pMenu);
     l->addWidget(m_pBtn);
+    l->addWidget(m_pBtntwo);
     l->addWidget(m_pTableWidget);
 
     QObject::connect(exitAct, &QAction::triggered, qApp, &QApplication::quit);
     QObject::connect(loadAct, &QAction::triggered, this, &MainWindow::chooseDirectory);
     QObject::connect(m_pBtn, &QPushButton::clicked, this, &MainWindow::chooseDirectory);
+    QObject::connect(m_pBtntwo, &QPushButton::clicked, this, &MainWindow::chooseImages);
 }
 
 void MainWindow::chooseDirectory()
@@ -62,6 +65,16 @@ void MainWindow::chooseDirectory()
         fillInfo(fileNames);
     }
 }
+
+void MainWindow::chooseImages()
+{
+    QStringList fileNames = QFileDialog::getOpenFileNames(this, "Select Image Files", QDir::currentPath(), "Images (*.jpg *.png *.bmp *.jpeg *.gif *.tiff)");
+
+    if (!fileNames.isEmpty()) {
+        fillInfo(fileNames);
+    }
+}
+
 
 void MainWindow::fillInfo(QStringList fileNames)
 {
@@ -114,7 +127,7 @@ void MainWindow::fillInfo(QStringList fileNames)
         reader.setDecideFormatFromContent(true);
         reader.read();
 
-        // Example: Get the number of colors in the palette for GIF images
+        // Get the number of colors in the palette for GIF images
         if (reader.format() == "GIF") {
             QString colorCount = reader.text("GIF/ColorCount");
             if (!colorCount.isEmpty()) {
